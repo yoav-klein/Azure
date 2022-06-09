@@ -28,7 +28,7 @@
       {
         "type": "Microsoft.Network/virtualNetworks",
         "apiVersion": "2021-08-01",
-        "name": "[parameters('subnetName')]",
+        "name": "[parameters('vnetName')]",
         "location": "[parameters('location')]",
         "properties": {
           "addressSpace": {
