@@ -5,9 +5,10 @@ $CommonArguments = @{
     newOrExistingVNet = "existing"
     "virtualNetworkName" = "myVNet"
     "subnetName" = "mySubnet"
-    "networkSecurityGroupName" = "myNSG"
+    #"networkSecurityGroupName" = "myNSG" # not needed when using existing vnet
 }
 
+# Frontend vm
 $FEVM = @{
     vmName = "FrontEnd-VM"
     adminUserName = "yoav"
@@ -16,6 +17,7 @@ $FEVM = @{
     vmSize = "Standard_B2s"
 }
 
+# Backend vm
 $BEVM = @{
     vmName = "BackEnd-VM"
     adminUserName = "yoav"

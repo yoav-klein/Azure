@@ -6,6 +6,8 @@ a virtual network, subnet, network secuirty group (for the VM - not the subnet).
 
 This is rather monolithic: What if I have an existing subnet to which I want to attach my virtual machine?
 
+This template creates a Virtual Machine, and allows the user the option to connect it to a ready-made subnet.
+
 ## Conditions
 ---
 You can add `condition` to resource definitions in ARM template, in which you specify
