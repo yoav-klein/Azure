@@ -97,7 +97,7 @@
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGName'))]"
             ],
             "properties": {
-                "protocol": "TCP",
+                "protocol": "Tcp",
                 "sourcePortRange": "*",
                 "destinationPortRange": "22",
                 "sourceAddressPrefix": "*",
@@ -144,27 +144,6 @@
                 ],
                 "virtualNetworkPeerings": [],
                 "enableDdosProtection": false
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('vnetName'), '/mySubnet')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]",
-                "[resourceId('Microsoft.Network/natGateways', parameters('NATGatewayName'))]"
-            ],
-            "properties": {
-                "addressPrefix": "10.0.1.0/24",
-                "natGateway": {
-                    "id": "[resourceId('Microsoft.Network/natGateways', parameters('NATGatewayName'))]"
-                },
-                "delegations": [],
-                "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled",
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGName'))]"
-                }
             }
         }
     ]
