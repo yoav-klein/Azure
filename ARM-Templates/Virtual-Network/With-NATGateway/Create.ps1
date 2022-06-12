@@ -1,5 +1,5 @@
 
-$ResourceGroupName = "1-2c3e846e-playground-sandbox"
+$ResourceGroupName = "1-d27fc885-playground-sandbox"
 $VNetArgs = @{
     vnetName = "myVNet"
     location = "East US"
