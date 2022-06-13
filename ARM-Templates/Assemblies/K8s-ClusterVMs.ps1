@@ -7,16 +7,42 @@
 #
 ########################################
 
-$ResourceGroupName = "1-f90e6e66-playground-sandbox"
+$CommonArgs = @{
+    location = "eastus"
+    ResourceGroupName = "1-f90e6e66-playground-sandbox"
+}
+
 $SubnetArgs = @{
     vnetName = "myVNet"
-    location = "eastus"
     vnetAddressPrefix = "10.0.0.0/16"
     subnets = @(
-        { name = "mySubnet"; prefix = "10.0.1.0/24" }
+        @{ name = "mySubnet"; prefix = "10.0.1.0/24" }
     )
 }
 
-$MasterVM = 
+$VMsCommon = @{
+    newOrExistingVNet = "existing"
+    virtualNetworkName = "myVNet"
+    subnet = "mySubnet"
+}
 
-New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName  @SubnetArgs -TemplateFile ../Networking/Several-Subnets/VNet-Template.json
+$Master = @{
+    vmName = "master"
+    adminUserName = "yoav"
+    authenticationType = "password"
+    ubuntuOSVersion = "18.04-LTS"
+    vmSize = "Standard_B2s"
+}
+
+$Node = @{
+    vmName = "node"
+    adminUserName = "yoav"
+    authenticationType = "password"
+    ubuntuOSVersion = "18.04-LTS"
+    vmSize = "Standard_B2s"
+}
+
+New-AzResourceGroupDeployment -Name VNet @CommonArgs  @SubnetArgs -TemplateFile ../Networking/Several-Subnets/VNet-Template.json
+
+New-AzResourceGroupDeployment -Name VirtualMachine @CommonArgs @VMsCommon @Master -TemplateFile ../Virtual-Machines/Advanced/VirtualMachine-Template.json
+New-AzResourceGroupDeployment -Name VirtualMachine @CommonArgs @VMsCommon @Node -TemplateFile ../Virtual-Machines/Advanced/VirtualMachine-Template.json

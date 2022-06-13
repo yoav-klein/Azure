@@ -10,4 +10,4 @@ $Arguments = @{
     )
 }
 
-New-AzResourceGroupDeployment -Name VirtualNetwork -ResourceGroupName $ResourceGroupName @Arguments -TemplateFile Unified.json
+New-AzResourceGroupDeployment -Name VirtualNetwork -ResourceGroupName $ResourceGroupName @Arguments -TemplateFile VNet-Template.json
