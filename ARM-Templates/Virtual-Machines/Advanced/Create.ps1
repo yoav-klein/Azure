@@ -3,8 +3,8 @@ $CommonArguments = @{
     ResourceGroupName = "1-17f5695d-playground-sandbox"
     location = "East US"
     newOrExistingVNet = "existing"
-    "virtualNetworkName" = "myVNet"
-    "subnetName" = "mySubnet"
+    virtualNetworkName = "myVNet"
+    subnetName = "mySubnet"
     #"networkSecurityGroupName" = "myNSG" # not needed when using existing vnet
 }
 

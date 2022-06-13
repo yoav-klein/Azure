@@ -1,6 +1,6 @@
 
 $Arguments = @{
-    ResourceGroupName = "1-d27fc885-playground-sandbox"
+    ResourceGroupName = "1-ab7d8dd8-playground-sandbox"
     location = "eastus"
     lbName = "myLB"
     lbIPName = "lbIP"
