@@ -34,7 +34,7 @@
         }
       },
       "adminPasswordOrKey": {
-        "type": "secureString",
+        "type": "securestring",
         "metadata": {
           "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
         }
@@ -216,7 +216,10 @@
             "publicIPAddressVersion": "IPv4",
             "publicIPAllocationMethod": "Static",
             "idleTimeoutInMinutes": 4,
-            "ipTags": []
+            "ipTags": [],
+            "dnsSettings": {
+              "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+            }
           }
         },
         {
