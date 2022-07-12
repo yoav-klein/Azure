@@ -3,7 +3,7 @@ $Base = "../.."
 
 $NATGatewayName = "kthw-natGateway"
 $CommonArgs = @{
-    location = "eastus"
+    location = "Germany West Central"
     ResourceGroupName = "1-62f47641-playground-sandbox"
 }
 
@@ -37,27 +37,27 @@ $LoadBalancer = @{
 
 $Controller1 = @{
     vmName = "controller1"
-    loadBalancerName = "kthw-lb"
-    lbBackendPoolName = "kthw-lb-backendPool"
-    virtualNetworkName = "kthw-vnet"
-    subnetName = "kthw-controllers-subnet"
+    loadBalancerName = $LoadBalancer.lbName
+    lbBackendPoolName = $LoadBalancer.lbBackendPoolName
+    virtualNetworkName = $VnetArgs.vnetName
+    subnetName = $ControllersSubnet.subnetName
     adminUserName = "yoav"
     publicIp = $true
 }
 
 $Worker1 = @{
     vmName = "worker1"
-    virtualNetworkName = "kthw-vnet"
-    subnetName = "kthw-workers-subnet"
+    virtualNetworkName = $VnetArgs.vnetName
+    subnetName = $WorkersSubnet.subnetName
     adminUserName = "yoav"
     publicIp = $true
 }
 
-# New-AzResourceGroupDeployment -Name ControllersNSG     @CommonArgs -nsgName "kthw-controllers-nsg" -TemplateFile ./Controller-NSG-Template.json
-# New-AzResourceGroupDeployment -Name WorkersNSG         @CommonArgs -nsgName "kthw-workers-nsg"     -TemplateFile ./Worker-NSG-Template.json
-# New-AzResourceGroupDeployment -Name NATGateway         @CommonArgs -natGatewayName $NATGatewayName -TemplateFile $Base/Networking/NAT-Gateway/NATGateway-Template.json
-# New-AzResourceGroupDeployment -Name ControllersSubnet  @CommonArgs @VnetArgs @ControllersSubnet    -TemplateFile $Base/Networking/Subnet/Subnet-Template.json
-# New-AzResourceGroupDeployment -Name WorkersSubnet      @CommonArgs @VnetArgs @WorkersSubnet        -TemplateFile $Base/Networking/Subnet/Subnet-Template.json
-# New-AzResourceGroupDeployment -Name LoadBalancer       @CommonArgs @LoadBalancer                   -TemplateFile ./LoadBalancer-Template.json
-#New-AzResourceGroupDeployment -Name ControllerVM1      @CommonArgs @Controller1                    -TemplateFile $Base/Virtual-Machines/WithLoadBalancer/VirtualMachine-Template.json
+New-AzResourceGroupDeployment -Name ControllersNSG     @CommonArgs -nsgName "kthw-controllers-nsg" -TemplateFile ./Controller-NSG-Template.json
+New-AzResourceGroupDeployment -Name WorkersNSG         @CommonArgs -nsgName "kthw-workers-nsg"     -TemplateFile ./Worker-NSG-Template.json
+New-AzResourceGroupDeployment -Name NATGateway         @CommonArgs -natGatewayName $NATGatewayName -TemplateFile $Base/Networking/NAT-Gateway/NATGateway-Template.json
+New-AzResourceGroupDeployment -Name ControllersSubnet  @CommonArgs @VnetArgs @ControllersSubnet    -TemplateFile $Base/Networking/Subnet/Subnet-Template.json
+New-AzResourceGroupDeployment -Name WorkersSubnet      @CommonArgs @VnetArgs @WorkersSubnet        -TemplateFile $Base/Networking/Subnet/Subnet-Template.json
+New-AzResourceGroupDeployment -Name LoadBalancer       @CommonArgs @LoadBalancer                   -TemplateFile ./LoadBalancer-Template.json
+New-AzResourceGroupDeployment -Name ControllerVM1      @CommonArgs @Controller1                    -TemplateFile $Base/Virtual-Machines/WithLoadBalancer/VirtualMachine-Template.json
 New-AzResourceGroupDeployment -Name WorkerVM1          @CommonArgs @Worker1                        -TemplateFile $Base/Virtual-Machines/NoVNet/VirtualMachine-Template.json
