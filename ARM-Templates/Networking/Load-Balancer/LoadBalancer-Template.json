@@ -3,8 +3,16 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "lbName": {
-            "defaultValue": "myLB",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Load Balancer" 
+            }
+        },
+        "lbBackendPoolName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of a backend pool to be created for the LB"
+            }
         },
         "location": {
             "type": "string"
@@ -61,7 +69,7 @@
                 ],
                 "backendAddressPools": [
                     {
-                        "name": "lbBackendPool",
+                        "name": "[parameters('lbBackendPoolName')]",
                         "properties": {
                             "loadBalancerBackendAddresses": []
                         }
@@ -83,7 +91,7 @@
                             "loadDistribution": "Default",
                             "disableOutboundSnat": true,
                             "backendAddressPool": {
-                                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('lbName'), 'lbBackendPool')]"
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('lbName'), parameters('lbBackendPoolName'))]"
                             },
                             "probe": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('lbName')), '/probes/lbHP')]"
