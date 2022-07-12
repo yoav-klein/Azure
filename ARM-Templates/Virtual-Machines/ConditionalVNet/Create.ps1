@@ -1,6 +1,6 @@
 
 $CommonArguments = @{
-    ResourceGroupName = "1-17f5695d-playground-sandbox"
+    ResourceGroupName = "1-9cecd885-playground-sandbox"
     location = "East US"
     newOrExistingVNet = "existing"
     virtualNetworkName = "myVNet"

@@ -84,18 +84,6 @@
         "metadata": {
           "description": "Whether or not to create a Public IP for the machine"
         }
-      },
-      "loadBalancerName": {
-        "type": "string",
-        "metadata": {
-          "description": "Name of the Load Balancer to associate with"
-        }
-      },
-      "lbBackendPoolName": {
-        "type": "string",
-        "metadata": {
-            "description": "Name of the Load Balancer's Backend pool name"
-        }
       }
     },
     "variables": {
@@ -152,19 +140,13 @@
                   "subnet": {
                     "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
                   },
-                  "privateIPAllocationMethod": "Dynamic",
-                  "loadBalancerBackendAddressPools": [
-                    {
-                        
-                        "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools',  parameters('loadBalancerName'), parameters('lbBackendPoolName'))]"
-                    }
-                  ]
+                  "privateIPAllocationMethod": "Dynamic"
                 }
               }
             ]
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
+            "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
           ]
         },
         {

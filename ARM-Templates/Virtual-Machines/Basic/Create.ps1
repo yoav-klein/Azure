@@ -1,6 +1,6 @@
 
 $Arguments = @{
-    ResourceGroupName = "1-5da69676-playground-sandbox"
+    ResourceGroupName = "1-62f47641-playground-sandbox"
     location = "East US"
     vmName = "myLinux"
     adminUserName = "yoav"
