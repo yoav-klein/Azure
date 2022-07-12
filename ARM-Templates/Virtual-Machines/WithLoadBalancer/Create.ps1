@@ -7,6 +7,7 @@ $Arguments = @{
     lbBackendPoolName = "lbBackendPool"
     virtualNetworkName = "myVNet"
     subnetName = "mySubnet"
+    publicIP = $true
 }
 
 

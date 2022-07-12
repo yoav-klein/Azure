@@ -68,16 +68,21 @@
       },
       "virtualNetworkName": {
         "type": "string",
-        "defaultValue": "vNet",
         "metadata": {
           "description": "Name of the VNET"
         }
       },
       "subnetName": {
         "type": "string",
-        "defaultValue": "Subnet",
         "metadata": {
           "description": "Name of the subnet in the virtual network"
+        }
+      },
+      "publicIP": {
+        "type": "bool",
+        "defaultValue": "false",
+        "metadata": {
+          "description": "Whether or not to create a Public IP for the machine"
         }
       },
       "loadBalancerName": {
@@ -93,8 +98,8 @@
         }
       }
     },
-      "variables": {
-        "networkInterfaceName": "[format('{0}NetInt', parameters('vmName'))]",
+    "variables": {
+        "networkInterfaceName": "[format('{0}-net-intrf', parameters('vmName'))]",
         "osDiskType": "Standard_LRS",
         "linuxConfiguration": {
           "disablePasswordAuthentication": true,
@@ -107,9 +112,32 @@
             ]
           }
         },
-        "loadBalancerID": "/subscriptions/0f39574d-d756-48cf-b622-0e27a6943bd2/resourceGroups/1-d27fc885-playground-sandbox/providers/Microsoft.Network/loadBalancers/myLB"
+        "publicIPAddressName": "[format('{0}-pub-ip', parameters('vmName'))]",
+        "dnsLabelPrefix": "[toLower(format('{0}-{1}', parameters('vmName'), uniqueString(resourceGroup().id)))]",
+        "publicIPAddress": {
+          "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+        }
       },
       "resources": [
+        {
+          "type": "Microsoft.Network/publicIPAddresses",
+          "apiVersion": "2021-05-01",
+          "name": "[variables('publicIPAddressName')]",
+          "location": "[parameters('location')]",
+          "condition": "[parameters('publicIP')]",
+          "sku": {
+            "name": "Standard"
+          },
+          "properties": {
+            "publicIPAddressVersion": "IPv4",
+            "publicIPAllocationMethod": "Static",
+            "idleTimeoutInMinutes": 4,
+            "ipTags": [],
+            "dnsSettings": {
+              "domainNameLabel": "[variables('dnsLabelPrefix')]"
+            }
+          }
+        },
         {
           "type": "Microsoft.Network/networkInterfaces",
           "apiVersion": "2021-05-01",
@@ -120,6 +148,7 @@
               {
                 "name": "ipconfig1",
                 "properties": {
+                  "publicIPAddress": "[if(parameters('publicIP'), variables('publicIPAddress'), null())]",
                   "subnet": {
                     "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
                   },
@@ -129,11 +158,14 @@
                         
                         "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools',  parameters('loadBalancerName'), parameters('lbBackendPoolName'))]"
                     }
-                ]
+                  ]
                 }
               }
             ]
-          }
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
+          ]
         },
         {
           "type": "Microsoft.Compute/virtualMachines",
