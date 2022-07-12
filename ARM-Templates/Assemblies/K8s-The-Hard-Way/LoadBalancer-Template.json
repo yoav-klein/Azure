@@ -104,6 +104,7 @@
                         "name": "lbHP",
                         "properties": {
                             "protocol": "Https",
+                            "requestPath": "/healthz",
                             "port": 6443,
                             "intervalInSeconds": 5,
                             "numberOfProbes": 2
