@@ -3,7 +3,7 @@ $Base = "../.."
 $SubnetTemplate = "$Base/Networking/Subnet/Subnet-Template.json"
 $VMTemplateFile = "$Base/Virtual-Machines/WithLoadBalancer/VirtualMachine-Template.json"
 $LoadBalancerTemplateFile = "$Base/Networking/Load-Balancer/LoadBalancer-Template.json"
-$ResourceGroupName = "1-41ff552a-playground-sandbox"
+$ResourceGroupName = "1-7497d412-playground-sandbox"
 
 $CommonArguments = @{
     ResourceGroupName = $ResourceGroupName
@@ -38,7 +38,7 @@ $LoadBalancer = @{
 
 $VMCommon = @{
     adminUserName = "yoav"
-    authenticationType = "password"
+    authenticationType = "sshPublicKey"
     loadBalancerName = "myLB"
     lbBackendPoolName = "myLBBackend"
 }

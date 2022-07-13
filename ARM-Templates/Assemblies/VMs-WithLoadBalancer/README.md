@@ -13,9 +13,10 @@ We create the following resources:
 
 ## Usage
 ---
-1. Fill in the resource group name in `Create.ps1` and run it.
-2. Copy the `setup.sh` and `webapp.py` to each of the machines. (Use `Get-AzPublicIpAddress -Name vm<x>-pub-ip` to get the public IP of the machines)
-3. SSH into each machine, run `setup.py` and then `sudo python3 webapp.py`
+1. Fill in the resource group name in `Create.ps1`.
+2. Generate a SSH key-pair.
+3. Run `Create.ps1` , and give the public key in the creation of the virtual machines.
+4. Edit the `Deploy.ps1`, fill in the path of the private key, and run it.
 
 ## Test
 ---
