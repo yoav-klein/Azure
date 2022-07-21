@@ -195,6 +195,10 @@
         "adminUsername": {
           "type": "string",
           "value": "[parameters('adminUsername')]"
+        },
+        "hostname": {
+          "type": "string",
+          "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).dnsSettings.fqdn]"
         }
       }
     }
