@@ -1,11 +1,14 @@
 
 $Base = "../.."
-$SSHPublicKeyPath = "$Base/../azure.pub"
+$SSHPublicKeyPath = "./azure.pub"
+
+$AzUserName = "cloud_user_p_c4a2d7cc@azurelabs.linuxacademy.com"
+$AzPassword = "9DI9!9FxsG1gI4GgMK5x"
 
 $NATGatewayName = "kthw-natGateway"
 $CommonArgs = @{
     location = "Germany West Central"
-    ResourceGroupName = "1-7497d412-playground-sandbox"
+    ResourceGroupName = "1-3bccb905-playground-sandbox"
 }
 
 $VnetArgs = @{
@@ -74,13 +77,29 @@ $Worker2 = @{
     publicIp = $true
 }
 
-New-AzResourceGroupDeployment -Name ControllersNSG     @CommonArgs -nsgName "kthw-controllers-nsg" -TemplateFile ./Controller-NSG-Template.json
-New-AzResourceGroupDeployment -Name WorkersNSG         @CommonArgs -nsgName "kthw-workers-nsg"     -TemplateFile ./Worker-NSG-Template.json
-New-AzResourceGroupDeployment -Name NATGateway         @CommonArgs -natGatewayName $NATGatewayName -TemplateFile $Base/Networking/NAT-Gateway/NATGateway-Template.json
-New-AzResourceGroupDeployment -Name ControllersSubnet  @CommonArgs @VnetArgs @ControllersSubnet    -TemplateFile $Base/Networking/Subnet/Subnet-Template.json
-New-AzResourceGroupDeployment -Name WorkersSubnet      @CommonArgs @VnetArgs @WorkersSubnet        -TemplateFile $Base/Networking/Subnet/Subnet-Template.json
-New-AzResourceGroupDeployment -Name LoadBalancer       @CommonArgs @LoadBalancer                   -TemplateFile ./LoadBalancer-Template.json
-New-AzResourceGroupDeployment -Name ControllerVM1      @CommonArgs @VMCommon @Controller1          -TemplateFile $Base/Virtual-Machines/WithLoadBalancer/VirtualMachine-Template.json
-New-AzResourceGroupDeployment -Name WorkerVM1          @CommonArgs @VMCommon @Worker1              -TemplateFile $Base/Virtual-Machines/NoVNet/VirtualMachine-Template.json
-New-AzResourceGroupDeployment -Name ControllerVM2      @CommonArgs @VMCommon @Controller2          -TemplateFile $Base/Virtual-Machines/WithLoadBalancer/VirtualMachine-Template.json
-New-AzResourceGroupDeployment -Name WorkerVM2          @CommonArgs @VMCommon @Worker2              -TemplateFile $Base/Virtual-Machines/NoVNet/VirtualMachine-Template.json
+function Create-Resources {
+    $ErrorActionPreference = "Stop"
+    New-AzResourceGroupDeployment -Name ControllersNSG     @CommonArgs -nsgName "kthw-controllers-nsg" -TemplateFile ./Controller-NSG-Template.json
+    New-AzResourceGroupDeployment -Name WorkersNSG         @CommonArgs -nsgName "kthw-workers-nsg"     -TemplateFile ./Worker-NSG-Template.json
+    New-AzResourceGroupDeployment -Name NATGateway         @CommonArgs -natGatewayName $NATGatewayName -TemplateFile $Base/Networking/NAT-Gateway/NATGateway-Template.json
+    New-AzResourceGroupDeployment -Name ControllersSubnet  @CommonArgs @VnetArgs @ControllersSubnet    -TemplateFile $Base/Networking/Subnet/Subnet-Template.json
+    New-AzResourceGroupDeployment -Name WorkersSubnet      @CommonArgs @VnetArgs @WorkersSubnet        -TemplateFile $Base/Networking/Subnet/Subnet-Template.json
+    New-AzResourceGroupDeployment -Name LoadBalancer       @CommonArgs @LoadBalancer                   -TemplateFile ./LoadBalancer-Template.json
+    New-AzResourceGroupDeployment -Name ControllerVM1      @CommonArgs @VMCommon @Controller1          -TemplateFile $Base/Virtual-Machines/WithLoadBalancer/VirtualMachine-Template.json
+    New-AzResourceGroupDeployment -Name WorkerVM1          @CommonArgs @VMCommon @Worker1              -TemplateFile $Base/Virtual-Machines/NoVNet/VirtualMachine-Template.json
+    New-AzResourceGroupDeployment -Name ControllerVM2      @CommonArgs @VMCommon @Controller2          -TemplateFile $Base/Virtual-Machines/WithLoadBalancer/VirtualMachine-Template.json
+    New-AzResourceGroupDeployment -Name WorkerVM2          @CommonArgs @VMCommon @Worker2              -TemplateFile $Base/Virtual-Machines/NoVNet/VirtualMachine-Template.json
+}
+
+function Create-Account {
+    $SecurePassword = ConvertTo-SecureString $AzPassword -AsPlainText -Force
+    $Cred = New-Object System.Management.Automation.PSCredential ($AzUserName, $SecurePassword)
+    Connect-AzAccount -Credential $Cred
+    $RGN = $(Get-AzResourceGroup).ResourceGroupName
+    Write-Output "ResourceGroupName: $RGN"
+    $script:CommonArgs.ResourceGroupName = $RGN
+    
+}
+
+Create-Account
+Create-Resources
