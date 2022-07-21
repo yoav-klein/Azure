@@ -2,13 +2,13 @@
 $Base = "../.."
 $SSHPublicKeyPath = "./azure.pub"
 
-$AzUserName = "cloud_user_p_c4a2d7cc@azurelabs.linuxacademy.com"
-$AzPassword = "9DI9!9FxsG1gI4GgMK5x"
+$AzUserName = "cloud_user_p_81d06d05@azurelabs.linuxacademy.com"
+$AzPassword = "gVHmFrlUi4gE2yEc2kS*"
 
 $NATGatewayName = "kthw-natGateway"
 $CommonArgs = @{
     location = "Germany West Central"
-    ResourceGroupName = "1-3bccb905-playground-sandbox"
+    ResourceGroupName = ""
 }
 
 $VnetArgs = @{
@@ -77,6 +77,8 @@ $Worker2 = @{
     publicIp = $true
 }
 
+
+
 function Create-Resources {
     $ErrorActionPreference = "Stop"
     New-AzResourceGroupDeployment -Name ControllersNSG     @CommonArgs -nsgName "kthw-controllers-nsg" -TemplateFile ./Controller-NSG-Template.json
@@ -96,10 +98,18 @@ function Create-Account {
     $Cred = New-Object System.Management.Automation.PSCredential ($AzUserName, $SecurePassword)
     Connect-AzAccount -Credential $Cred
     $RGN = $(Get-AzResourceGroup).ResourceGroupName
-    Write-Output "ResourceGroupName: $RGN"
     $script:CommonArgs.ResourceGroupName = $RGN
     
 }
 
+function Write-ResourcesData {
+    "resourceGroupName: $($CommonArgs.ResourceGroupName)" > resources.txt
+    "controller1: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name ControllerVM1).Outputs.hostname.value)" >> resources.txt
+    "controller2: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name ControllerVM2).Outputs.hostname.value)" >> resources.txt
+    "worker1: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name WorkerVM1).Outputs.hostname.value)" >> resources.txt
+    "worker2: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name WorkerVM2).Outputs.hostname.value)" >> resources.txt
+}
+
 Create-Account
 Create-Resources
+Write-ResourcesData
