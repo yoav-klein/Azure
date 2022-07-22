@@ -19,7 +19,8 @@
         }
     },
     "variables": {
-        "lbIPName": "[format('{0}-pub-ip', parameters('lbName'))]"
+        "lbIPName": "[format('{0}-pub-ip', parameters('lbName'))]",
+        "dnsLabelPrefix": "[toLower(format('{0}-{1}', parameters('lbName'), uniqueString(resourceGroup().id)))]"
     },
     "resources": [
         {
@@ -40,7 +41,10 @@
                 "publicIPAddressVersion": "IPv4",
                 "publicIPAllocationMethod": "Static",
                 "idleTimeoutInMinutes": 4,
-                "ipTags": []
+                "ipTags": [],
+                "dnsSettings": {
+                    "domainNameLabel": "[variables('dnsLabelPrefix')]"
+                  }
             }
         },
         {
@@ -116,5 +120,15 @@
                 "inboundNatPools": []
             }
         }
-    ]
+    ],
+    "outputs": {
+        "ip": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('lbIPNAme'))).ipAddress]"
+        },
+        "domainName": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('lbIPNAme'))).dnsSettings.fqdn]"
+        }
+    }
 }

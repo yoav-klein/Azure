@@ -2,8 +2,8 @@
 $Base = "../.."
 $SSHPublicKeyPath = "./azure.pub"
 
-$AzUserName = "cloud_user_p_81d06d05@azurelabs.linuxacademy.com"
-$AzPassword = "gVHmFrlUi4gE2yEc2kS*"
+$AzUserName = "cloud_user_p_5416c31b@azurelabs.linuxacademy.com"
+$AzPassword = "C9Mbg#wUla8Fb8jYCQyD"
 
 $NATGatewayName = "kthw-natGateway"
 $CommonArgs = @{
@@ -108,6 +108,8 @@ function Write-ResourcesData {
     "controller2: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name ControllerVM2).Outputs.hostname.value)" >> resources.txt
     "worker1: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name WorkerVM1).Outputs.hostname.value)" >> resources.txt
     "worker2: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name WorkerVM2).Outputs.hostname.value)" >> resources.txt
+    "loadBalancerDomainName: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name LoadBalancer).Outputs.domainName.value)" >> resources.txt
+    
 }
 
 Create-Account
