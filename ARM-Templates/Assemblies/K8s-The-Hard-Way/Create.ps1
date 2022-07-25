@@ -2,8 +2,8 @@
 $Base = "../.."
 $SSHPublicKeyPath = "./azure.pub"
 
-$AzUserName = "cloud_user_p_076ee45e@azurelabs.linuxacademy.com"
-$AzPassword = "0gEjSuybTeOn8@rcYh6X"
+$AzUserName = "cloud_user_p_52ed15c5@azurelabs.linuxacademy.com"
+$AzPassword = "e4mhK1x4%vRI6eeWTO4C"
 
 $NATGatewayName = "kthw-natGateway"
 $CommonArgs = @{
@@ -109,7 +109,7 @@ function Write-ResourcesData {
     "worker1: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name WorkerVM1).Outputs.hostname.value)" >> resources.txt
     "worker2: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name WorkerVM2).Outputs.hostname.value)" >> resources.txt
     "loadBalancerDomainName: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name LoadBalancer).Outputs.domainName.value)" >> resources.txt
-    "loadBalancerIp": $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name LoadBalancer).Outputs.ip.value)" >> resources.txt
+    "loadBalancerIp: $($(Get-AzResourceGroupDeployment -ResourceGroupName $CommonArgs.ResourceGroupName -Name LoadBalancer).Outputs.ip.value)" >> resources.txt
     
 }
 
