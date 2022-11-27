@@ -1,8 +1,8 @@
 
 
-CLIENT_ID = "8368523b-72d2-4b57-b9a0-1c2031d9d635"
+CLIENT_ID = "d88bf75e-132e-460b-841c-d4f71985e97e"
 
-CLIENT_SECRET = "b.~8Q~q-aGJe9fWmv.7wUAlbwesZh~0RdO_7Bb9s"
+CLIENT_SECRET = "mob8Q~bFLOf4Ob.AQwz5mtGDmTPpOY4aOmZCBarM"
 
 AUTHORITY = "https://login.microsoftonline.com/3bfb3df7-6b1e-447a-8dfc-cac205f2e79f/v2.0"
 

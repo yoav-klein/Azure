@@ -40,13 +40,14 @@ def setup_oidc():
 
     op_info = ProviderConfigurationResponse(**oidc_config)
     client.handle_provider_config(op_info, op_info['issuer'])
+
     info = {"client_id": app_config.CLIENT_ID, 
     "client_secret": app_config.CLIENT_SECRET,
     "redirect_uris": ["http://localhost:5000/getAToken"]}
     client_reg = RegistrationResponse(**info)
 
     client.store_registration_info(client_reg)
-    print(client.authorization_endpoint)
+
 
 @app.route("/login")
 def login():
@@ -56,18 +57,15 @@ def login():
     args = {
         "client_id": client.client_id,
         "response_type": "code",
-        "scope": ["openid", "profile"],
+        "scope": ["openid", "profile", "offline_access"],
         "nonce": session["nonce"],
         "redirect_uri": client.registration_response["redirect_uris"][0],
         "state": session["state"]
     }
 
-    
     auth_req = client.construct_AuthorizationRequest(request_args=args)
     login_url = auth_req.request(client.authorization_endpoint)
-    print("========")
     print(login_url)
-    print("========")
     return Redirect(login_url)
 
 @app.route("/getAToken")
@@ -78,18 +76,19 @@ def authorize():
     aresp = client.parse_response(AuthorizationResponse, info=response,
                                 sformat="dict")
 
-    print(request.args)
     code = aresp["code"]
     assert aresp["state"] == session["state"]
 
-    args["code"]=code
+    
+    req_args = {
+        'code': code
+    }
     
     resp = client.do_access_token_request(state=aresp["state"],
-                                       request_args=args,
-                                       authn_method="client_secret_basic")
-    print("======================")
-    print(resp)
-    print("====================")
+                                        request_args=req_args,
+                                        authn_method="client_secret_basic")
+    
+
     session["user"] = resp['id_token']
     return redirect(url_for('index'))
 
