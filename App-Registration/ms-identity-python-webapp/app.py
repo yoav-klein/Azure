@@ -30,6 +30,15 @@ def login():
     session["flow"] = _build_auth_code_flow(scopes=app_config.SCOPE)
     return render_template("login.html", auth_url=session["flow"]["auth_uri"], version=msal.__version__)
 
+
+#####
+#
+#   This is the endpoint to which the user-agent will be redirected
+#   by the Authorization Endpoint with the authorization code
+#   The code is passed to the "acquire_token_by_auth_code_flow" 
+#   which returns the access and id tokens
+#
+
 @app.route(app_config.REDIRECT_PATH)  # Its absolute URL must match your app's redirect_uri set in AAD
 def authorized():
     try:
@@ -38,7 +47,7 @@ def authorized():
             session.get("flow", {}), request.args)
         if "error" in result:
             return render_template("auth_error.html", result=result)
-        print("####### DEBUG: acquire_token_by_uth_code_flow return value ###########")
+        print("####### DEBUG: acquire_token_by_auth_code_flow return value ###########")
         print(result)
         print("################################################")
         session["user"] = result.get("id_token_claims")
