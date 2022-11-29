@@ -42,3 +42,42 @@ All the information about the structure of the requests and all that is taken fr
 
 https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow
 https://learn.microsoft.com/en-us/azure/active-directory/develop/id-tokens
+
+## What is does
+Basically these sample applications just implement the above-described flow, and by which acquire an access token with which
+the client application can issue requests to resources on-behalf of the user.
+
+In this case, we allow the user to issue a request to the Microsoft Graph API, to read basic information about all the users
+in the organization. This is done by sending a request to the `/v1.0/users` endpoint of the Graph API.
+For this, we need to request the user to grant us the `User.ReadBasic.All` scope.
+
+
+## Usage
+### Install prerequisites
+In each sample application directory there is a `requirements.txt` that you need to install.
+
+### Register your application
+First, you must register an application with the Microsoft identity platform. You need to set the Redirect URI
+and a client secret.
+
+For the _Redirect URI_ you must specify: `http://localhost:5000/getAToken`
+
+So basically the information you need to come up with sums up to:
+1. Client ID
+2. Client secret
+3. Tenant ID
+4. Redirect URI
+
+### Configure the application
+You need to set these values in the `app_config.py` file, which is present in each of the sample applications.
+
+Also, you have the `SCOPES` configuration bit in the app_config files, with which you can set your application
+to ask for certain scopes.
+
+### Run
+```
+$ py app.py
+```
+
+And browse to `http://localhost:5000`
+

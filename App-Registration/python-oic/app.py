@@ -4,7 +4,6 @@ import json
 import requests
 
 from flask import Flask, render_template, request, session, redirect, url_for
-from flask_session import Session
 
 from oic.oic import Client
 from oic.utils.authn.client import CLIENT_AUTHN_METHOD
@@ -21,8 +20,9 @@ oidc_config = {}
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
+app.config.from_object(app_config)
 app.config['SESSION_TYPE'] = 'filesystem'
-Session(app)
+
 
 def get_oidc_data():
     url = f"{app_config.AUTHORITY}/.well-known/openid-configuration"
@@ -48,6 +48,19 @@ def setup_oidc():
     client_reg = RegistrationResponse(**info)
 
     client.store_registration_info(client_reg)
+
+
+
+@app.route("/graphcall")
+def graphcall():
+    token = session['access_token']
+    if not token:
+        return redirect(url_for("login"))
+    graph_data = requests.get(  # Use token to call downstream service
+        app_config.ENDPOINT,
+        headers={'Authorization': 'Bearer ' + token},
+        ).json()
+    return render_template('display.html', result=graph_data)
 
 
 @app.route("/login")
@@ -86,8 +99,8 @@ def authorize():
                                     request_args=req_args,
                                     authn_method="client_secret_basic")
     
-    
-    session["user"] = resp['id_token']
+    session['access_token'] = resp['access_token']
+    session['user'] = resp['id_token']
     return redirect(url_for('index'))
 
 @app.route("/logout")

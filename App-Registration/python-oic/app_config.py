@@ -10,4 +10,9 @@ REDIRECT_PATH = "/getAToken"  # Used for forming an absolute URL to your redirec
                               # The absolute URL must match the redirect URI you set
                               # in the app's registration in the Azure portal.
 
+REDIRECT_URI = f"http://localhost:5000{REDIRECT_PATH}"
+
 # You can find more Microsoft Graph API endpoints from Graph Explor
+SCOPES = "User.ReadBasic.All"
+
+ENDPOINT = 'https://graph.microsoft.com/v1.0/users' 
