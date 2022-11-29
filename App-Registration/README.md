@@ -81,3 +81,10 @@ $ py app.py
 
 And browse to `http://localhost:5000`
 
+
+## Google
+
+We've also added here a sample application that does OpenID Connect authentication with Google. 
+It's very similar to the `my-impl` application.
+
+Refer to https://developers.google.com/identity/openid-connect/openid-connect

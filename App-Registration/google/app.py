@@ -1,11 +1,13 @@
 
+import hashlib
+import os
 import json
+
 from urllib.parse import urlencode, urlunparse, urlparse
 
 import requests
 import jwt
-from flask import Flask, render_template, request, session, redirect, url_for
-from flask import Flask, url_for, redirect, session
+from flask import Flask, session, render_template, url_for, redirect, request
 
 import app_config
 
@@ -15,20 +17,26 @@ app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
 op_config = {}
-
 def configure_op():
-    url = f"{app_config.AUTHORITY}/.well-known/openid-configuration"
     global op_config
-    op_config = requests.get(url).json()
+    op_config = requests.get("https://accounts.google.com/.well-known/openid-configuration").json()
+    print(op_config)
+
+# Create a state token to prevent request forgery.
+# Store it in the session for later validation.
+#state = hashlib.sha256(os.urandom(1024)).hexdigest()
+#session['state'] = state
+# Set the client ID, token state, and application name in the HTML while
+# serving it.
 
 
 def construct_auth_endpoint_url():    
     query = {
-        'scope': 'openid profile offline_access' + ' ' + app_config.SCOPES,
+        'scope': 'openid profile email',
         'client_id': app_config.CLIENT_ID,
         'response_type': 'code',
         'response_mode': 'query',
-        'state': 'random_string',
+        'state': hashlib.sha256(os.urandom(1024)).hexdigest(),
         'redirect_uri': app_config.REDIRECT_URI
     }
 
@@ -37,36 +45,6 @@ def construct_auth_endpoint_url():
     auth_uri = urlunparse([parsed[0], parsed[1], parsed[2], '', query_string, ''])
 
     return auth_uri
-
-
-@app.route("/")
-def index():
-    if "user" not in session:
-        return redirect(url_for("login"))
-    return render_template("index.html", name=session["user"]["name"])
-
-
-@app.route("/graphcall")
-def graphcall():
-    token = session['access_token']
-    if not token:
-        return redirect(url_for("login"))
-    graph_data = requests.get(  # Use token to call downstream service
-        app_config.ENDPOINT,
-        headers={'Authorization': 'Bearer ' + token},
-        ).json()
-    return render_template('display.html', result=graph_data)
-
-
-@app.route("/login")
-def login():
-    return render_template("login.html", auth_url=construct_auth_endpoint_url())
-    
-@app.route("/logout")
-def logout():
-    session.clear()  # Wipe out user and its token cache from session
-    return redirect(  # Also logout from your tenant's web session
-        op_config['end_session_endpoint']  + "?post_logout_redirect_uri=" + url_for("index", _external=True))
 
 
 @app.route(app_config.REDIRECT_PATH)
@@ -86,16 +64,29 @@ def authorized():
 
     query_string = urlencode(query)
     
-    resp = requests.post(token_endpoint, data=query_string).json()
+    resp = requests.post(token_endpoint, data=query_string, headers={'Content-Type': 'application/x-www-form-urlencoded'}).json()
     
     session['user'] = jwt.decode(resp['id_token'], options={"verify_signature": False})
     session['access_token'] = resp['access_token']
 
     return redirect(url_for("index"))
 
+@app.route("/")
+def index():
+    if "user" not in session:
+        return redirect(url_for("login"))
+    return render_template("index.html", name=session["user"]["name"])
+
+    
+@app.route("/login")
+def login():
+    return render_template("login.html", auth_url=construct_auth_endpoint_url())
+
+
 def main():
     configure_op()
     app.run()
+
 
 if __name__ == "__main__":
     main()
