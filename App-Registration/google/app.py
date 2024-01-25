@@ -16,10 +16,12 @@ app.config.from_object(app_config)
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
+
 op_config = {}
 def configure_op():
     global op_config
     op_config = requests.get("https://accounts.google.com/.well-known/openid-configuration").json()
+    print("DEBUG: os_config")
     print(op_config)
 
 # Create a state token to prevent request forgery.
@@ -32,7 +34,7 @@ def configure_op():
 
 def construct_auth_endpoint_url():    
     query = {
-        'scope': 'openid profile email',
+        'scope': app_config.SCOPE,
         'client_id': app_config.CLIENT_ID,
         'response_type': 'code',
         'response_mode': 'query',
@@ -49,6 +51,7 @@ def construct_auth_endpoint_url():
 
 @app.route(app_config.REDIRECT_PATH)
 def authorized():
+    print("DEBUG:: in redirect")
     code = request.args['code']
     state = request.args['state']
 
@@ -63,9 +66,13 @@ def authorized():
     }
 
     query_string = urlencode(query)
+
+    print(f"DEBUG:: authorized:: sending to token endpoint: {query}")
     
     resp = requests.post(token_endpoint, data=query_string, headers={'Content-Type': 'application/x-www-form-urlencoded'}).json()
     
+    print("DEBUG: response from token endpoint")
+    print(resp)
     session['user'] = jwt.decode(resp['id_token'], options={"verify_signature": False})
     session['access_token'] = resp['access_token']
 
@@ -73,6 +80,7 @@ def authorized():
 
 @app.route("/")
 def index():
+    print("DEBUG:: in index")
     if "user" not in session:
         return redirect(url_for("login"))
     return render_template("index.html", name=session["user"]["name"])
@@ -80,7 +88,14 @@ def index():
     
 @app.route("/login")
 def login():
+    print("DEBUG:: in login")
     return render_template("login.html", auth_url=construct_auth_endpoint_url())
+
+@app.route("/logout")
+def logout():
+    session.clear()
+
+    return redirect(url_for("index"))
 
 
 def main():
