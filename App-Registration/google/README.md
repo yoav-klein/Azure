@@ -10,7 +10,7 @@ and also use Google as the identity provider.
 You can see the list of scopes that Google supports here:
 https://developers.google.com/identity/protocols/oauth2/scopes
 
-In this demo, we ask for the scopes: `openid`, `profile`, `email` and `https://www.googleapis.com/auth/drive.photos.readonly` - which allows us to access Google photos of the user.
+In this demo, we ask for the scopes: `openid`, `profile`, `email` and `https://www.googleapis.com/auth/photoslibrary` - which allows us to access Google photos of the user.
 
 If you run this application you'll see in the console output the tokens you receive from 
 the Authorization endpoint of the Authorization server. 
@@ -22,5 +22,5 @@ The Access token you receive is opaque, and Google allows you to decode it by pa
 curl "https://oauth2.googleapis.com/tokeninfo?access_token=ACCESS_TOKEN"
 ```
 
-## TODO
-Might be cool to actually access the Google Photos API and pull some photos from there...
+## Retrieving a photo from Google Photos
+Using the access token, we pull a photo from the user's Google Photos

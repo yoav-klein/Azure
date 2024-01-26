@@ -83,7 +83,44 @@ def index():
     print("DEBUG:: in index")
     if "user" not in session:
         return redirect(url_for("login"))
-    return render_template("index.html", name=session["user"]["name"])
+
+    url = 'https://photoslibrary.googleapis.com/v1/mediaItems'
+
+    # Headers with Authorization
+    headers = {
+        'Authorization': f"Bearer {session['access_token']}",
+        'Content-Type': 'application/json'
+    }
+
+    params = {
+        'pageSize': 10,  # Specify the number of albums per page
+        # Add more parameters as needed
+    }
+
+    # Make the API request
+    response = requests.get(url, headers=headers, params=params)
+
+    # Check if the request was successful (status code 200)
+    selected_photo_id = ''
+    if response.status_code == 200:
+        # Process the response data (it will be in JSON format)
+        media_items = response.json()
+        for item in media_items.get('mediaItems', []):
+            if item['mimeType'] == 'image/jpeg':
+                selected_photo_id = item['id']
+    else:
+        # Handle errors
+        print(f"Error: {response.status_code} - {response.text}")
+
+    url = f"https://photoslibrary.googleapis.com/v1/mediaItems/{selected_photo_id}"
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        jsoned = response.json()
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+
+    return render_template("index.html", name=session["user"]["name"], photoUrl=jsoned['baseUrl'])
 
     
 @app.route("/login")

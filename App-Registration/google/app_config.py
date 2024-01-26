@@ -9,4 +9,4 @@ REDIRECT_PATH = "/getAToken"  # Used for forming an absolute URL to your redirec
 
 REDIRECT_URI = f"http://localhost:5000{REDIRECT_PATH}"
 
-SCOPE = "openid profile email https://www.googleapis.com/auth/drive.photos.readonly"
+SCOPE = "openid profile email https://www.googleapis.com/auth/photoslibrary"
